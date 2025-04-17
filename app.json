@@ -1,0 +1,8 @@
+{
+  "expo": {
+    "name": "myFirstApplication",
+    "slug": "myFirstApplication",
+    "version": "1.0.0",
+    "newArchEnabled": true
+  }
+}
