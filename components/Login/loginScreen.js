@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     height: 65,
     borderRadius: 100,
     position: "absolute",
-    top: 20,
+    top: 30,
     right: 165,
     objectFit: "contain",
     borderColor: "white",
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     fontSize: 20,
     color: "white",
-    top: 38,
+    top: 48,
     right: 110,
   },
   Labels: {
