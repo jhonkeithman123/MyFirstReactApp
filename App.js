@@ -8,22 +8,23 @@ import {
   Button,
   TouchableHighlight,
 } from "react-native";
-import Header from "./header.js";
+import LoginScreen from "./components/Login/loginScreen.js";
+import StarryBackground from "./components/background/shootingStar.js";
 
 export default function App() {
   console.log("Tester connected");
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header title="My first App" />
-      <StatusBar style="auto" />
+      <StarryBackground />
+      <LoginScreen />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 0.5,
+    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
