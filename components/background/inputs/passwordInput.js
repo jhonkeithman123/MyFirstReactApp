@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const PasswordInput = () => {
+const PasswordInput = ({ placeholder }) => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
 
   return (
     <View style={styles.inputContainer}>
       <TextInput
         style={styles.input}
-        placeholder="Password"
+        placeholder={placeholder}
         placeholderTextColor="white"
         secureTextEntry={!isPasswordVisible}
       />
@@ -35,7 +35,8 @@ const styles = StyleSheet.create({
     width: "90%",
     borderBottomWidth: 1,
     borderBottomColor: "white",
-    paddingBottom: 5,
+    paddingBottom: 2,
+    marginBottom: 10,
   },
   input: {
     flex: 1,

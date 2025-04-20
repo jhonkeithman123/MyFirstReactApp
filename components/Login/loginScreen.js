@@ -2,21 +2,28 @@ import React from "react";
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Dimensions,
+  Pressable,
 } from "react-native";
-import PasswordInput from "./passwordInput";
-import CustomButton from "./Button";
+import PasswordInput from "../background/inputs/passwordInput";
+import CustomButton from "../background/inputs/Button";
 import { Ionicons } from "@expo/vector-icons";
 
-const LoginScreen = () => {
+const { width, height } = Dimensions.get("window");
+
+const LoginScreen = ({ handleToggle, isButtonDisabled }) => {
   return (
     <View style={styles.container}>
-      <Image source={require("../../assets/logo.png")} style={styles.logo} />
-      <Text style={styles.title}>AICS</Text>
-      <Text style={styles.Labels}>Login</Text>
+      <Pressable
+        onLongPress={() => handleToggle("AdminLogin")}
+        delayLongPress={2000}
+        style={styles.press}
+      >
+        <Text style={styles.Labels}>Login</Text>
+      </Pressable>
 
       <View style={styles.inputContainer}>
         <TextInput
@@ -24,7 +31,7 @@ const LoginScreen = () => {
           placeholder="Email or Username"
           placeholderTextColor="white"
         />
-        <PasswordInput />
+        <PasswordInput placeholder="Password" />
         <CustomButton
           title="Login"
           onPress={() => console.log("Login button pressed!")}
@@ -35,7 +42,7 @@ const LoginScreen = () => {
             style={styles.socielButton}
             onPress={() => console.log("Google Sign-In")}
           >
-            <Ionicons name="logo-google" size={24} color="white" />
+            <Ionicons name="logo-google" size={height * 0.024} color="white" />
             <Text style={styles.socialText}>Sign in with Google</Text>
           </TouchableOpacity>
 
@@ -43,31 +50,37 @@ const LoginScreen = () => {
             style={styles.socielButton}
             onPress={() => console.log("Facebook Sign-In")}
           >
-            <Ionicons name="logo-facebook" size={24} color="white" />
+            <Ionicons
+              name="logo-facebook"
+              size={height * 0.024}
+              color="white"
+            />
             <Text style={styles.socialText}>Sign in with Facebook</Text>
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity
-          onPress={() => console.log("Sign-Up button pressed!")}
+          onPress={() => handleToggle("signup")}
+          disabled={isButtonDisabled}
+          style={isButtonDisabled && { opacity: 0.5 }}
         >
-          <Text style={styles.signUpText}>Don't have any account? Sign-Up</Text>
+          <Text style={styles.signUpText}>No Account? Sign-Up</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => console.log("Forgot Password button pressed!")}
+          onPress={() => handleToggle("reset")}
+          disabled={isButtonDisabled}
+          style={isButtonDisabled && { opacity: 0.5 }}
         >
-          <Text style={styles.signUpText}>
-            Forgot your password? Reset Password
-          </Text>
+          <Text style={styles.signUpText}>Forgot Password? Reset it</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => console.log("Delete account button pressed!")}
+          onPress={() => handleToggle("delete")}
+          disabled={isButtonDisabled}
+          style={isButtonDisabled && { opacity: 0.5 }}
         >
-          <Text style={styles.signUpText}>
-            Tired of this app? Delete Account
-          </Text>
+          <Text style={styles.signUpText}>Tired of this app? Delete it</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -81,77 +94,64 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
   },
-  logo: {
-    width: 65,
-    height: 65,
-    borderRadius: 100,
-    position: "absolute",
-    top: 30,
-    right: 165,
-    objectFit: "contain",
-    borderColor: "white",
-    shadowColor: "#000",
-    shadowOffset: { width: 10, height: 20 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
-  },
-  title: {
-    position: "absolute",
-    fontSize: 20,
-    color: "white",
-    top: 48,
-    right: 110,
-  },
   Labels: {
     position: "absolute",
-    fontSize: 30,
+    fontSize: height * 0.03,
     color: "white",
-    top: 180,
+    top: height * -0.015,
+    textAlign: "center",
+  },
+  press: {
+    position: "absolute",
+    top: height * 0.125,
+    alignItems: "center",
+    width: "100%",
   },
   inputContainer: {
     position: "absolute",
-    top: 270,
+    top: height * 0.197,
     width: "80%",
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 10,
-    padding: 20,
-    paddingVertical: 30,
-    paddingBottom: 40,
+    padding: height * 0.023,
+    paddingVertical: height * 0.03,
+    paddingBottom: height * 0.04,
   },
   input: {
     width: "90%",
-    padding: 10,
+    padding: height * 0.012,
     borderBottomWidth: 1,
     borderBottomColor: "white",
-    fontSize: 18,
+    fontSize: height * 0.019,
     color: "white",
     marginBottom: 15,
   },
   socialContainer: {
     width: "100%",
-    marginTop: 15,
+    marginTop: height * 0.015,
     alignItems: "center",
   },
   socielButton: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.3)",
-    padding: 12,
+    padding: height * 0.012,
     borderRadius: 10,
     width: "80%",
-    marginBottom: 10,
+    marginBottom: height * 0.01,
   },
   socialText: {
     color: "white",
-    fontSize: 16,
-    marginLeft: 10,
+    fontSize: height * 0.016,
+    marginLeft: width * 0.018,
   },
   signUpText: {
-    marginTop: 15,
+    marginTop: height * 0.015,
     color: "white",
-    fontSize: 16,
+    fontSize: height * 0.016,
     textDecorationLine: "underline",
+    fontWeight: "bold",
   },
 });
 

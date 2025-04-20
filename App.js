@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, SafeAreaView } from "react-native";
-import LoginScreen from "./components/Login/loginScreen.js";
+import AuthScreen from "./components/AuthScreen.js";
 import StarryBackground from "./components/background/shootingStar.js";
 
 export default function App() {
@@ -10,7 +10,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.container}>
       <StarryBackground />
-      <LoginScreen />
+      <AuthScreen />
       <StatusBar style="light" />
     </SafeAreaView>
   );
