@@ -82,9 +82,10 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
   },
   press: {
-    left: width * -0.41,
+    position: "absolute",
+    left: "-45%",
     width: width * 0.1,
-    top: height * -0.463,
+    top: height * 0.04,
     height: height * 0.08,
     padding: 10,
     zIndex: 1000,
@@ -96,9 +97,9 @@ const styles = StyleSheet.create({
     textAlign: "left",
     alignSelf: "center",
     color: "white",
-    top: height * 0.05,
+    top: height * 0.07,
     width: "80%",
-    right: "-43%",
+    right: "-50%",
     //backgroundColor: "rgba(255, 0, 0, 0.3)", // for debugging purposes
   },
 });

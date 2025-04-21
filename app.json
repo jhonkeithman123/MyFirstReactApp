@@ -3,6 +3,21 @@
     "name": "myFirstApplication",
     "slug": "myFirstApplication",
     "version": "1.0.0",
-    "newArchEnabled": true
+    "newArchEnabled": true,
+    "scheme": "myfirstapp",
+    "extra": {
+      "eas": {
+        "projectId": "9a63ffa1-501a-4166-99de-35333f2a8dea"
+      }
+    },
+    "android": {
+      "package": "com.x131fgh.myFirstApplication"
+    },
+    "icon": "./assets/logo.png",
+    "splash": {
+      "image": "./assets/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    }
   }
 }

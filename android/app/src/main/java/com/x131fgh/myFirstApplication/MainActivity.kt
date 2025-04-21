@@ -1,4 +1,4 @@
-package com.myfirstapplication
+package com.x131fgh.myFirstApplication
 
 import android.os.Build
 import android.os.Bundle

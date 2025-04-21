@@ -1,4 +1,4 @@
-package com.myfirstapplication
+package com.x131fgh.myFirstApplication
 
 import android.app.Application
 import android.content.res.Configuration

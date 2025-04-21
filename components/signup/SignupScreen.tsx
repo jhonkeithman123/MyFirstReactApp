@@ -31,41 +31,35 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
-  const slideAnim = useRef(new Animated.Value(-30)).current;
+  const slideAnim = useRef(new Animated.Value(-height * 0.1)).current;
+  const duration = 700;
+  const defaultPos = -height * 0.3;
+  const destination = height * 0.014;
 
   useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: message || error ? destination : defaultPos, // ⬅️ Slide down when message appears, up when cleared
+      duration: duration,
+      useNativeDriver: true,
+    }).start();
+
     if (message || error) {
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => {
-        setTimeout(() => {
-          Animated.timing(slideAnim, {
-            toValue: -30,
-            duration: 300,
-            useNativeDriver: true,
-          }).start();
-        }, 350);
-      });
-    } else {
-      Animated.timing(slideAnim, {
-        toValue: -30,
-        duration: 300,
-        useNativeDriver: true,
-      }).start(() => {
-        setTimeout(() => {
-          Animated.timing(slideAnim, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true,
-          }).start();
-        }, 350);
-      });
+      setTimeout(() => {
+        Animated.timing(slideAnim, {
+          toValue: defaultPos,
+          duration: duration,
+          useNativeDriver: true,
+        }).start(() => {
+          setTimeout(() => {
+            setMessage("");
+            setError("");
+          }, 900);
+        });
+      }, 5000);
     }
   }, [message, error]);
 
-  const handleSignup = async () => {
+  const handleSignup = async (): Promise<void> => {
     try {
       if (!email || !password || !username || !confirmPassword) {
         setError("All fields required.");
@@ -74,6 +68,43 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
 
       if (password !== confirmPassword) {
         setError("Passwords must be match.");
+        return;
+      }
+
+      if (!(email.includes("@") && email.includes("."))) {
+        setError("Emails must have @ and . in them");
+        return;
+      }
+
+      // Enforce minimum username length based on provider
+      const emailDomain = email.split("@")[1];
+      const emailParts = email.split("@");
+      const usernameLength = email.split("@")[0].length;
+
+      if (
+        emailParts.length < 2 ||
+        emailParts[1].length < 3 ||
+        !emailParts[1].includes(".")
+      ) {
+        setError("Invalid Email.");
+        return;
+      }
+
+      if (emailDomain.includes("gmail.com") && usernameLength < 6) {
+        setError("Gmail emails must be at least 6 characters.");
+        return;
+      }
+      if (emailDomain.includes("yahoo.com") && usernameLength < 4) {
+        setError("Yahoo emails must be at least 4 characters.");
+        return;
+      }
+      if (emailDomain.includes("icloud.com") && usernameLength > 21) {
+        setError("iCloud emails must be 21 characters or fewer.");
+        return;
+      }
+
+      if (username.length < 6) {
+        setError("Username must be 6 characters or above.");
         return;
       }
 
@@ -121,7 +152,12 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
         </TouchableOpacity>
       </View>
 
-      <Animated.View style={styles.messageContainer}>
+      <Animated.View
+        style={[
+          styles.messageContainer,
+          { transform: [{ translateY: slideAnim }] },
+        ]}
+      >
         {message ? <Text style={styles.message}>{message}</Text> : null}
         {error ? <Text style={styles.error}>{error}</Text> : null}
       </Animated.View>
@@ -171,23 +207,33 @@ const styles = StyleSheet.create({
   },
   error: {
     color: "red",
-    fontSize: height * 0.012,
+    fontSize: height * 0.013,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: width * 0, height: height * 0.002 },
+    backgroundColor: "#1f2d42",
+    padding: height * 0.013,
   },
   message: {
     color: "green",
-    fontSize: height * 0.012,
+    fontSize: height * 0.013,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: width * 0, height: height * 0.002 },
+    backgroundColor: "#1f2d42",
+    padding: height * 0.013,
   },
   messageContainer: {
     position: "absolute",
     top: height * 0.02,
     padding: height * 0.01,
     width: "90%",
-    backgroundColor: "#4630EB",
-    borderRadius: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    shadowOffset: { width: width * 0, height: height * 0.002 },
+    alignItems: "center",
+    // backgroundColor: "#4630EB",
   },
 });
 

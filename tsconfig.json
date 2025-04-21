@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "module": "esnext",
     "target": "esnext",
     "moduleResolution": "node",
     "jsx": "react-native",
@@ -15,7 +16,8 @@
     "@types/**/*.d.ts",
     "@types/env.d.ts",
     "babel.config.js",
-    "env.d.ts"
+    "env.d.ts",
+    "metro.config.js"
   ],
   "exclude": ["node_modules", "assets", "dist"],
   "extends": "expo/tsconfig.base",

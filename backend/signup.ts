@@ -1,6 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { firestore } from "./firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { firestore, auth } from "./firebase";
 
 export async function registerUser(
   email: string,
@@ -9,16 +7,14 @@ export async function registerUser(
   role = "user"
 ) {
   try {
-    const auth = getAuth();
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
+    const userCredential = await auth().createUserWithEmailAndPassword(
       email,
       password
     );
     const user = userCredential.user;
 
-    const userDoc = doc(firestore, "users", user.uid);
-    await setDoc(userDoc, {
+    const userDoc = firestore().collection("users").doc(user.uid);
+    await userDoc.set({
       username,
       email,
       profile_picture: "",

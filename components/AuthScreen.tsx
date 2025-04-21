@@ -20,18 +20,19 @@ const AuthScreen = () => {
 
     setButtonDisabled(true);
 
-    let slidingDirection = screen === "login" ? 50 : -50;
+    let slidingDirection = screen === "login" ? height * 0.9 : height * 0.9;
+    const duration = 800;
 
     Animated.timing(slideAnim, {
       toValue: slidingDirection,
-      duration: 500,
+      duration: duration,
       useNativeDriver: true,
     }).start(() => {
       requestAnimationFrame(() => setCurrentScreen(screen));
 
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 500,
+        duration: duration,
         useNativeDriver: true,
       }).start(() => setButtonDisabled(false));
     });
