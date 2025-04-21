@@ -12,9 +12,17 @@ import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
 import EmailInput from "../background/inputs/emailInput";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-const AdminSignUpScreen = ({ handleToggle, isButtonDisabled }) => {
+interface AdminSignupScreenProps {
+  handleToggle: (screen: string) => void;
+  isButtonDisabled?: boolean;
+}
+
+const AdminSignUpScreen: React.FC<AdminSignupScreenProps> = ({
+  handleToggle,
+  isButtonDisabled,
+}) => {
   return (
     <View style={styles.container}>
       <Pressable

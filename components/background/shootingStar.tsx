@@ -6,7 +6,7 @@ import Star from "./star";
 const { height, width } = Dimensions.get("window");
 
 const StarryBackground = () => {
-  const stars = Array.from({ length: 40 }).map((_, index) => ({
+  const stars = Array.from({ length: 40 }).map((_) => ({
     top: Math.random() * height,
     left: Math.random() * width,
   }));

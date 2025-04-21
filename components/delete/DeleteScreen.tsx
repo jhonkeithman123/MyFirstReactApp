@@ -9,9 +9,17 @@ import {
 import EmailInput from "../background/inputs/emailInput";
 import CustomButton from "../background/inputs/Button";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-const DeleteScreen = ({ handleToggle, isButtonDisabled }) => {
+interface DeleteScreenProps {
+  handleToggle: (screen: string) => void;
+  isButtonDisabled?: boolean;
+}
+
+const DeleteScreen: React.FC<DeleteScreenProps> = ({
+  handleToggle,
+  isButtonDisabled,
+}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.Labels}>Delete Account</Text>

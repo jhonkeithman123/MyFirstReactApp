@@ -9,9 +9,17 @@ import {
 import CustomButton from "../background/inputs/Button";
 import EmailInput from "../background/inputs/emailInput";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-const ResetScreen = ({ handleToggle, isButtonDisabled }) => {
+interface ResetScreenProps {
+  handleToggle: (screen: string) => void;
+  isButtonDisabled?: boolean;
+}
+
+const ResetScreen: React.FC<ResetScreenProps> = ({
+  handleToggle,
+  isButtonDisabled,
+}) => {
   return (
     <View style={styles.container}>
       <Text style={styles.Labels}>Reset Password</Text>

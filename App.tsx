@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, SafeAreaView } from "react-native";
-import AuthScreen from "./components/AuthScreen.js";
-import StarryBackground from "./components/background/shootingStar.js";
+import AuthScreen from "./components/AuthScreen";
+import StarryBackground from "./components/background/shootingStar";
 
 export default function App() {
   console.log("Tester connected");

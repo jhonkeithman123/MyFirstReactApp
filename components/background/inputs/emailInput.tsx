@@ -1,14 +1,26 @@
 import React, { useState } from "react";
-import { View, TextInput, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  StyleSheet,
+  TextInputProps,
+} from "react-native";
 
-const EmailInput = () => {
-  const [email, setEmail] = useState("");
+interface EmailInputProps extends TextInputProps {
+  value: string;
+  onChangeText: (text: string) => void;
+}
+
+const EmailInput: React.FC<EmailInputProps> = ({ value, onChangeText }) => {
   const [error, setError] = useState("");
 
-  const validateEmail = (text) => {
-    setEmail(text);
-    if (!text.includes("@")) {
-      setError("Invalid email. Must contain '@'");
+  const validateEmail = (text: string) => {
+    onChangeText(text);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex) {
+      setError("Invalid email format!");
     } else {
       setError("");
     }
@@ -21,7 +33,7 @@ const EmailInput = () => {
         placeholder="Email"
         placeholderTextColor="white"
         onChangeText={validateEmail}
-        value={email}
+        value={value}
         keyboardType="email-address"
         autoCapitalize="none"
       />

@@ -14,7 +14,15 @@ import { Ionicons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
-const LoginScreen = ({ handleToggle, isButtonDisabled }) => {
+interface LoginScreenProps {
+  handleToggle: (screen: string) => void;
+  isButtonDisabled?: boolean;
+}
+
+const LoginScreen: React.FC<LoginScreenProps> = ({
+  handleToggle,
+  isButtonDisabled,
+}) => {
   return (
     <View style={styles.container}>
       <Pressable

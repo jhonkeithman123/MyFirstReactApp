@@ -1,7 +1,11 @@
 import React, { useRef, useEffect } from "react";
-import { View, Animated, StyleSheet } from "react-native";
+import { Animated, StyleSheet, StyleProp, ViewStyle } from "react-native";
 
-const Star = ({ style }) => {
+interface StarProps {
+  style?: StyleProp<ViewStyle>;
+}
+
+const Star: React.FC<StarProps> = ({ style }) => {
   const opacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {

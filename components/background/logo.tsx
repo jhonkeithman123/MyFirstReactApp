@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import {
   View,
-  Text,
   Image,
   StyleSheet,
   Pressable,
@@ -94,7 +93,7 @@ const styles = StyleSheet.create({
   title: {
     position: "absolute",
     fontSize: height * 0.019,
-    textAlign: "flex-start",
+    textAlign: "left",
     alignSelf: "center",
     color: "white",
     top: height * 0.05,

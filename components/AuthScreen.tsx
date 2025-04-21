@@ -1,12 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  View,
-  Text,
-  Animated,
-  Image,
-  StyleSheet,
-  Dimensions,
-} from "react-native";
+import { View, Animated, StyleSheet, Dimensions } from "react-native";
 import LoginScreen from "./Login/loginScreen";
 import SignupScreen from "./signup/SignupScreen";
 import DeleteScreen from "./delete/DeleteScreen";
@@ -15,14 +8,14 @@ import AdminLoginScreen from "./admins/adminLogin";
 import AdminSignUpScreen from "./admins/adminSignup";
 import LogoComponent from "./background/logo";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const AuthScreen = () => {
   const [currentScreen, setCurrentScreen] = useState("login");
   const [isButtonDisabled, setButtonDisabled] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
-  const handleToggle = (screen) => {
+  const handleToggle = (screen: string) => {
     if (screen === currentScreen) return;
 
     setButtonDisabled(true);

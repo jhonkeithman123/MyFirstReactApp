@@ -11,9 +11,17 @@ import {
 import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
-const AdminLoginScreen = ({ handleToggle, isButtonDisabled }) => {
+interface AdminLoginScreenProps {
+  handleToggle: (screen: string) => void;
+  isButtonDisabled?: boolean;
+}
+
+const AdminLoginScreen: React.FC<AdminLoginScreenProps> = ({
+  handleToggle,
+  isButtonDisabled,
+}) => {
   return (
     <View style={styles.container}>
       <Pressable
