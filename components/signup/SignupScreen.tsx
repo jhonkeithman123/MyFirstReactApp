@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, FC } from "react";
 import {
   View,
   StyleSheet,
@@ -12,17 +12,20 @@ import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
 import EmailInput from "../background/inputs/emailInput";
 import { registerUser } from "../../backend/signup";
+import { AuthScreenType } from "../AuthScreen";
 
 const { height, width } = Dimensions.get("window");
 
 interface SignupScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
+  onStoreCredentials: (username: string, password: string) => void;
 }
 
-const SignupScreen: React.FC<SignupScreenProps> = ({
+const SignupScreen: FC<SignupScreenProps> = ({
   handleToggle,
   isButtonDisabled,
+  onStoreCredentials,
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -63,6 +66,19 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
     try {
       if (!email || !password || !username || !confirmPassword) {
         setError("All fields required.");
+        return;
+      }
+
+      if (password.length < 8) {
+        setError("Password must be 8 characters or above.");
+        return;
+      }
+
+      const allowedSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+        password
+      );
+      if (!allowedSpecialChars) {
+        setError("Password must contain at least one special character.");
         return;
       }
 
@@ -112,9 +128,14 @@ const SignupScreen: React.FC<SignupScreenProps> = ({
       console.log("Sign Up successfull");
       setError(""); //* An empty setError means the process is success.
       setMessage("Your account has been created successfully!");
-    } catch (error) {
-      const err = error as Error;
-      setError(err.message);
+
+      onStoreCredentials(username, password);
+
+      setTimeout(() => {
+        handleToggle("login");
+      }, 2000); // Redirect to login after 2 seconds
+    } catch (error: any) {
+      setError((error as Error)?.message);
     }
   };
 

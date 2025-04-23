@@ -10,11 +10,12 @@ import {
 } from "react-native";
 import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
+import { AuthScreenType } from "../AuthScreen";
 
 const { height } = Dimensions.get("window");
 
 interface AdminLoginScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
 }
 
@@ -38,7 +39,7 @@ const AdminLoginScreen: React.FC<AdminLoginScreenProps> = ({
           placeholder="Email or Username"
           placeholderTextColor="white"
         />
-        <PasswordInput placeholder="Password" />
+        {/* <PasswordInput placeholder="Password" /> */}
         <CustomButton
           title="Login"
           onPress={() => console.log("Login button pressed!")}

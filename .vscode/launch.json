@@ -21,6 +21,15 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "DEV"],
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Expo Dev Scheme",
+      "request": "launch",
+      "type": "node",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "devScheme"],
+      "console": "integratedTerminal"
     }
   ]
 }

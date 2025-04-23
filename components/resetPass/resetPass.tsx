@@ -8,11 +8,12 @@ import {
 } from "react-native";
 import CustomButton from "../background/inputs/Button";
 import EmailInput from "../background/inputs/emailInput";
+import { AuthScreenType } from "../AuthScreen";
 
 const { height } = Dimensions.get("window");
 
 interface ResetScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
 }
 
@@ -25,7 +26,7 @@ const ResetScreen: React.FC<ResetScreenProps> = ({
       <Text style={styles.Labels}>Reset Password</Text>
 
       <View style={styles.inputContainer}>
-        <EmailInput />
+        {/* <EmailInput /> */}
         <CustomButton
           title="Sign Up"
           onPress={() => console.log("Sign Up Button Pressed!")}

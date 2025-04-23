@@ -8,11 +8,12 @@ import {
 } from "react-native";
 import EmailInput from "../background/inputs/emailInput";
 import CustomButton from "../background/inputs/Button";
+import { AuthScreenType } from "../AuthScreen";
 
 const { height } = Dimensions.get("window");
 
 interface DeleteScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
 }
 
@@ -25,7 +26,7 @@ const DeleteScreen: React.FC<DeleteScreenProps> = ({
       <Text style={styles.Labels}>Delete Account</Text>
 
       <View style={styles.inputContainer}>
-        <EmailInput />
+        {/* <EmailInput  /> */}
         <CustomButton
           title="Sign Up"
           onPress={() => console.log("Sign Up Button Pressed!")}

@@ -11,11 +11,12 @@ import {
 import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
 import EmailInput from "../background/inputs/emailInput";
+import { AuthScreenType } from "../AuthScreen";
 
 const { height } = Dimensions.get("window");
 
 interface AdminSignupScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
 }
 
@@ -34,14 +35,14 @@ const AdminSignUpScreen: React.FC<AdminSignupScreenProps> = ({
       </Pressable>
 
       <View style={styles.inputContainer}>
-        <EmailInput />
+        {/* <EmailInput /> */}
         <TextInput
           style={styles.input}
           placeholder="Enter Username"
           placeholderTextColor="white"
         />
-        <PasswordInput placeholder="Password" />
-        <PasswordInput placeholder="Confirm Password" />
+        {/* <PasswordInput placeholder="Password" /> */}
+        {/* <PasswordInput placeholder="Confirm Password" /> */}
         <TextInput
           style={styles.input}
           placeholder="Why do you want to be an admin?"

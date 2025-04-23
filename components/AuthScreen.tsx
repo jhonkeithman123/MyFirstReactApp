@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, FC } from "react";
 import { View, Animated, StyleSheet, Dimensions } from "react-native";
 import LoginScreen from "./Login/loginScreen";
 import SignupScreen from "./signup/SignupScreen";
@@ -7,15 +7,27 @@ import ResetScreen from "./resetPass/resetPass";
 import AdminLoginScreen from "./admins/adminLogin";
 import AdminSignUpScreen from "./admins/adminSignup";
 import LogoComponent from "./background/logo";
+import ProfileScreen from "./MainScreen/profileScreen";
 
 const { height } = Dimensions.get("window");
 
-const AuthScreen = () => {
-  const [currentScreen, setCurrentScreen] = useState("login");
+export type AuthScreenType =
+  | "signup"
+  | "login"
+  | "reset"
+  | "delete"
+  | "AdminLogin"
+  | "AdminSignup"
+  | "profile";
+
+const AuthScreen: FC = () => {
+  const [currentScreen, setCurrentScreen] = useState<AuthScreenType>("login");
   const [isButtonDisabled, setButtonDisabled] = useState(false);
+  const [storedUsername, setStoredUsername] = useState("");
+  const [storedPassword, setStoredPassword] = useState("");
   const slideAnim = useRef(new Animated.Value(0)).current;
 
-  const handleToggle = (screen: string) => {
+  const handleToggle = (screen: AuthScreenType) => {
     if (screen === currentScreen) return;
 
     setButtonDisabled(true);
@@ -28,7 +40,7 @@ const AuthScreen = () => {
       duration: duration,
       useNativeDriver: true,
     }).start(() => {
-      requestAnimationFrame(() => setCurrentScreen(screen));
+      setCurrentScreen(screen);
 
       Animated.timing(slideAnim, {
         toValue: 0,
@@ -38,48 +50,76 @@ const AuthScreen = () => {
     });
   };
 
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case "signup":
+        return (
+          <SignupScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+            // When signup finishes, store the credentials
+            onStoreCredentials={(username: string, password: string) => {
+              setStoredUsername(username);
+              setStoredPassword(password);
+            }}
+          />
+        );
+      case "login":
+        return (
+          <LoginScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+            defaultUsername={storedUsername}
+            defaultPassword={storedPassword}
+          />
+        );
+      case "reset":
+        return (
+          <ResetScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+          />
+        );
+      case "delete":
+        return (
+          <DeleteScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+          />
+        );
+      case "AdminLogin":
+        return (
+          <AdminLoginScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+          />
+        );
+      case "AdminSignup":
+        return (
+          <AdminSignUpScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+          />
+        );
+      case "profile":
+        return (
+          <ProfileScreen
+            handleToggle={handleToggle}
+            isButtonDisabled={isButtonDisabled}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <LogoComponent />
       <Animated.View
         style={[styles.screen, { transform: [{ translateY: slideAnim }] }]}
       >
-        {currentScreen === "login" && (
-          <LoginScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
-        {currentScreen === "signup" && (
-          <SignupScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
-        {currentScreen === "reset" && (
-          <ResetScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
-        {currentScreen === "delete" && (
-          <DeleteScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
-        {currentScreen === "AdminLogin" && (
-          <AdminLoginScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
-        {currentScreen === "AdminSignup" && (
-          <AdminSignUpScreen
-            handleToggle={handleToggle}
-            isButtonDisabled={isButtonDisabled}
-          />
-        )}
+        {renderScreen()}
       </Animated.View>
     </View>
   );

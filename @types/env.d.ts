@@ -6,4 +6,5 @@ declare module "@env" {
   export const messagingSenderId: string;
   export const appId: string;
   export const measurementId: string;
+  export const DATABASE_URL: string;
 }

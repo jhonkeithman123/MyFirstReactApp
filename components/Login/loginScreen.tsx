@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect, FC } from "react";
 import {
   View,
   Text,
@@ -7,22 +7,119 @@ import {
   TouchableOpacity,
   Dimensions,
   Pressable,
+  Animated,
 } from "react-native";
 import PasswordInput from "../background/inputs/passwordInput";
 import CustomButton from "../background/inputs/Button";
 import { Ionicons } from "@expo/vector-icons";
+import { loginUser } from "../../backend/login";
+import { AuthScreenType } from "../AuthScreen";
 
 const { width, height } = Dimensions.get("window");
 
 interface LoginScreenProps {
-  handleToggle: (screen: string) => void;
+  handleToggle: (screen: AuthScreenType) => void;
   isButtonDisabled?: boolean;
+  defaultPassword?: string;
+  defaultUsername?: string;
 }
 
-const LoginScreen: React.FC<LoginScreenProps> = ({
+const LoginScreen: FC<LoginScreenProps> = ({
   handleToggle,
   isButtonDisabled,
+  defaultPassword = "",
+  defaultUsername = "",
 }) => {
+  const [emailOrUsername, setEmailOrUsername] = useState(defaultUsername);
+  const [password, setPassword] = useState(defaultPassword);
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [loginAttemps, setLoginAttemps] = useState(0); //Password attempts
+  const [loginAtteptsEmail, setLoginAttempsEmail] = useState(0); //Email attempts
+
+  const slideAnim = useRef(new Animated.Value(-height * 0.1)).current;
+  const duration = 700;
+  const defaultPos = -height * 0.3;
+  const destination = height * 0.014;
+
+  useEffect(() => {
+    Animated.timing(slideAnim, {
+      toValue: message || error ? destination : defaultPos, // ⬅️ Slide down when message appears, up when cleared
+      duration: duration,
+      useNativeDriver: true,
+    }).start();
+
+    if (message || error) {
+      setTimeout(() => {
+        Animated.timing(slideAnim, {
+          toValue: defaultPos,
+          duration: duration,
+          useNativeDriver: true,
+        }).start(() => {
+          setTimeout(() => {
+            setMessage("");
+            setError("");
+          }, 900);
+        });
+      }, 5000);
+    }
+  }, [message, error]);
+
+  const handleLogin = async (): Promise<void> => {
+    try {
+      if (!emailOrUsername || !password) {
+        setError("Please fill in all fields.");
+        return;
+      }
+
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
+
+      const allowedSpecialChars = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(
+        password
+      );
+      if (!allowedSpecialChars) {
+        setError("Password must contain at least one special character.");
+        return;
+      }
+
+      await loginUser(emailOrUsername, password);
+      setMessage("Login successful!");
+      setLoginAttemps(0);
+
+      setTimeout(() => {
+        handleToggle("profile");
+      }, 2000);
+    } catch (error: any) {
+      console.error("Login error:", (error as Error)?.message);
+      let errorMessage = "Login failed. Please try again.";
+
+      if (error?.code === "auth/wrong-password") {
+        setLoginAttemps((prevAttemps) => prevAttemps + 1);
+        errorMessage = "Incorrect password.";
+      } else if (error?.code === "auth/user-not-found") {
+        setLoginAttempsEmail((prevAttemps) => prevAttemps + 1);
+        errorMessage = "Account with this email doesn't exist.";
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (loginAttemps >= 6) {
+      setError("Too many failed login attempts. Please reset your password.");
+      setTimeout(() => {
+        handleToggle("reset");
+      }, 2000);
+    } else if (loginAtteptsEmail >= 6) {
+      setError("Too many failed Login attempts. Please sign up.");
+      setTimeout(() => {
+        handleToggle("signup");
+      }, 2000);
+    }
+  }, [loginAttemps, handleToggle]);
+
   return (
     <View style={styles.container}>
       <Pressable
@@ -38,12 +135,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           style={styles.input}
           placeholder="Email or Username"
           placeholderTextColor="white"
+          value={emailOrUsername}
+          onChangeText={setEmailOrUsername}
         />
-        <PasswordInput placeholder="Password" />
-        <CustomButton
-          title="Login"
-          onPress={() => console.log("Login button pressed!")}
+        <PasswordInput
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
         />
+        <CustomButton title="Login" onPress={handleLogin} />
 
         <View style={styles.socialContainer}>
           <TouchableOpacity
@@ -91,6 +191,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({
           <Text style={styles.signUpText}>Tired of this app? Delete it</Text>
         </TouchableOpacity>
       </View>
+      <Animated.View
+        style={[
+          styles.messageContainer,
+          { transform: [{ translateY: slideAnim }] },
+        ]}
+      >
+        {message ? <Text style={styles.message}>{message}</Text> : null}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+      </Animated.View>
     </View>
   );
 };
@@ -160,6 +269,36 @@ const styles = StyleSheet.create({
     fontSize: height * 0.016,
     textDecorationLine: "underline",
     fontWeight: "bold",
+  },
+  error: {
+    color: "red",
+    fontSize: height * 0.013,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: width * 0, height: height * 0.002 },
+    backgroundColor: "#1f2d42",
+    padding: height * 0.013,
+  },
+  message: {
+    color: "green",
+    fontSize: height * 0.013,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: width * 0, height: height * 0.002 },
+    backgroundColor: "#1f2d42",
+    padding: height * 0.013,
+  },
+  messageContainer: {
+    position: "absolute",
+    top: height * 0.02,
+    padding: height * 0.01,
+    width: "90%",
+    alignItems: "center",
+    // backgroundColor: "#4630EB",
   },
 });
 

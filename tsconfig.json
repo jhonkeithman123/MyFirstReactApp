@@ -7,8 +7,8 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "skipLibCheck": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedLocals": true
+    // "noUnusedParameters": true
   },
   "include": [
     "**/*.ts",
