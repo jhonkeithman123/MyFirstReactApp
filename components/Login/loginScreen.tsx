@@ -90,6 +90,8 @@ const LoginScreen: FC<LoginScreenProps> = ({
       setLoginAttemps(0);
 
       setTimeout(() => {
+        setMessage("");
+        setError("");
         handleToggle("profile");
       }, 2000);
     } catch (error: any) {
@@ -103,6 +105,7 @@ const LoginScreen: FC<LoginScreenProps> = ({
         setLoginAttempsEmail((prevAttemps) => prevAttemps + 1);
         errorMessage = "Account with this email doesn't exist.";
       }
+      setError(errorMessage);
     }
   };
 

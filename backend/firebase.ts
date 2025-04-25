@@ -25,6 +25,8 @@ const firebaseConfig = {
   measurementId: measurementId,
   databaseURL: DATABASE_URL, // Uncomment if you need to use the database URL
 };
+console.log("Firebase Config:"); // Log the Firebase config for debugging
+console.table(firebaseConfig); // Log the Firebase config for debugging
 
 let firebaseApp!: Awaited<ReturnType<typeof fbInitializeApp>>;
 let authInstance: ReturnType<typeof getAuth>;
@@ -32,41 +34,66 @@ let firestoreInstance: ReturnType<typeof getFirestore>;
 let storageInstance: ReturnType<typeof getStorage>;
 
 async function initializeFirebase() {
-  if (!firebaseApp) {
-    firebaseApp = await fbInitializeApp(firebaseConfig);
+  try {
+    if (!firebaseApp) {
+      firebaseApp = await fbInitializeApp(firebaseConfig);
+    }
+    return firebaseApp;
+  } catch (error: any) {
+    console.error("Error initializing Firebase:", error);
+    throw error;
   }
-  return firebaseApp;
 }
 
-const getFirebaseApp = () => {
-  if (!firebaseApp) {
-    initializeFirebase();
+const getFirebaseApp = async () => {
+  try {
+    if (!firebaseApp) {
+      await initializeFirebase();
+    }
+    return firebaseApp;
+  } catch (error: any) {
+    console.error("Error getting Firebase app:", error);
+    throw error;
   }
-  return firebaseApp;
 };
 
-const getFirebaseAuth = () => {
-  if (!authInstance) {
-    const app = getFirebaseApp();
-    authInstance = getAuth(app);
+const getFirebaseAuth = async () => {
+  try {
+    if (!authInstance) {
+      const app = await getFirebaseApp();
+      authInstance = getAuth(app);
+    }
+    return authInstance;
+  } catch (error: any) {
+    console.error("Error getting Firebase Auth:", error);
+    throw error;
   }
-  return authInstance;
 };
 
-const getFirebaseFirestore = () => {
-  if (!firestoreInstance) {
-    const app = getFirebaseApp();
-    firestoreInstance = getFirestore(app);
+const getFirebaseFirestore = async () => {
+  try {
+    if (!firestoreInstance) {
+      const app = await getFirebaseApp();
+      firestoreInstance = getFirestore(app);
+    }
+    return firestoreInstance;
+  } catch (error: any) {
+    console.error("Error getting Firebase Firestore:", error);
+    throw error;
   }
-  return firestoreInstance;
 };
 
-const getFirebaseStorage = () => {
-  if (!storageInstance) {
-    const app = getFirebaseApp();
-    storageInstance = getStorage(app);
+const getFirebaseStorage = async () => {
+  try {
+    if (!storageInstance) {
+      const app = await getFirebaseApp();
+      storageInstance = getStorage(app);
+    }
+    return storageInstance;
+  } catch (error: any) {
+    console.error("Error getting Firebase Storage:", error);
+    throw error;
   }
-  return storageInstance;
 };
 
 const initializationPromise = initializeFirebase();

@@ -11,7 +11,9 @@ import {
 import CustomButton from "../background/inputs/Button";
 import PasswordInput from "../background/inputs/passwordInput";
 import EmailInput from "../background/inputs/emailInput";
+import EmailVerif from "../background/inputs/emailVerif";
 import { registerUser } from "../../backend/signup";
+import sendVerificationEmail from "../../backend/api/emailVerif";
 import { AuthScreenType } from "../AuthScreen";
 
 const { height, width } = Dimensions.get("window");
@@ -22,26 +24,33 @@ interface SignupScreenProps {
   onStoreCredentials: (username: string, password: string) => void;
 }
 
+type SignupStep = "email" | "signup" | "otp";
+
 const SignupScreen: FC<SignupScreenProps> = ({
   handleToggle,
   isButtonDisabled,
   onStoreCredentials,
 }) => {
+  const [step, setStep] = useState<SignupStep>("email"); // 1 for email, 2 for password
+
   const [email, setEmail] = useState("");
+  const [otp, setOTP] = useState("");
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
+
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
   const slideAnim = useRef(new Animated.Value(-height * 0.1)).current;
   const duration = 700;
-  const defaultPos = -height * 0.3;
-  const destination = height * 0.014;
+  const defaultMessagePos = -height * 0.3;
+  const destinationMessage = height * 0.014;
 
   useEffect(() => {
     Animated.timing(slideAnim, {
-      toValue: message || error ? destination : defaultPos, // ⬅️ Slide down when message appears, up when cleared
+      toValue: message || error ? destinationMessage : defaultMessagePos, // ⬅️ Slide down when message appears, up when cleared
       duration: duration,
       useNativeDriver: true,
     }).start();
@@ -49,7 +58,7 @@ const SignupScreen: FC<SignupScreenProps> = ({
     if (message || error) {
       setTimeout(() => {
         Animated.timing(slideAnim, {
-          toValue: defaultPos,
+          toValue: defaultMessagePos,
           duration: duration,
           useNativeDriver: true,
         }).start(() => {
@@ -61,6 +70,74 @@ const SignupScreen: FC<SignupScreenProps> = ({
       }, 5000);
     }
   }, [message, error]);
+
+  const formAnim = useRef(new Animated.Value(0)).current;
+  const offScreenPos = width; // Moves input screen down for OTP transition
+
+  const animateToStep = (newStep: SignupStep) => {
+    Animated.timing(formAnim, {
+      toValue: -offScreenPos,
+      duration: duration,
+      useNativeDriver: true,
+    }).start(() => {
+      setStep(newStep);
+
+      formAnim.setValue(offScreenPos);
+
+      Animated.timing(formAnim, {
+        toValue: 0,
+        duration: duration,
+        useNativeDriver: true,
+      }).start();
+    });
+  };
+
+  const handleSendEmail = async (): Promise<void> => {
+    if (!email) {
+      setError("Email is required.");
+      return;
+    }
+    if (!(email.includes("@") && email.includes("."))) {
+      setError("Invalid email format. Emails must have @ and .");
+      return;
+    }
+    try {
+      const responseData = await sendVerificationEmail(email, "verification");
+      if (responseData) {
+        if (responseData.success) {
+          setMessage(
+            "Email sent successfully! Please check your inbox or spam."
+          );
+
+          setTimeout(() => {
+            animateToStep("otp");
+          }, 1000);
+        } else if (responseData.error) {
+          setError(responseData.error);
+        } else {
+          setError("Failed to send verification email. Please try again.");
+        }
+      } else {
+        setError("Failed to send verification email. No data returned.");
+      }
+    } catch (error: any) {
+      console.error(error);
+      setError(error.message || "An error occurred. Please try again.");
+    }
+  };
+
+  const handleVerifyOTP = async (): Promise<void> => {
+    if (!otp || otp.length < 6) {
+      setError("Enter a valid 6-digit OTP.");
+      return;
+    }
+
+    setMessage("OTP verified successfully!");
+
+    setTimeout(() => {
+      animateToStep("signup");
+    }, 1000);
+  };
 
   const handleSignup = async (): Promise<void> => {
     try {
@@ -144,25 +221,62 @@ const SignupScreen: FC<SignupScreenProps> = ({
       <Text style={styles.Labels}>Sign Up</Text>
 
       <View style={styles.inputContainer}>
-        <EmailInput value={email} onChangeText={setEmail} />
-        <TextInput
-          style={styles.input}
-          placeholder="Enter Username"
-          placeholderTextColor="white"
-          value={username}
-          onChangeText={setUsername}
-        />
-        <PasswordInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-        />
-        <PasswordInput
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-        />
-        <CustomButton title="Sign Up" onPress={handleSignup} />
+        <Animated.View
+          style={{
+            width: "100%",
+            alignItems: "center",
+            transform: [{ translateY: formAnim }],
+          }}
+        >
+          {step === "email" && (
+            <>
+              <EmailInput value={email} onChangeText={setEmail} />
+              <CustomButton
+                title="Send Verification Code"
+                onPress={handleSendEmail}
+              />
+            </>
+          )}
+          {step === "otp" && (
+            <>
+              <EmailVerif
+                placeholder="Enter OTP"
+                value={otp}
+                onChangeText={setOTP}
+              />
+              <CustomButton title="Verify OTP" onPress={handleVerifyOTP} />
+            </>
+          )}
+          {step === "signup" && (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                placeholderTextColor="white"
+                value={email}
+                editable={false}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter Username"
+                placeholderTextColor="white"
+                value={username}
+                onChangeText={setUsername}
+              />
+              <PasswordInput
+                placeholder="Password"
+                value={password}
+                onChangeText={setPassword}
+              />
+              <PasswordInput
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+              />
+              <CustomButton title="Sign Up" onPress={handleSignup} />
+            </>
+          )}
+        </Animated.View>
 
         <TouchableOpacity
           onPress={() => handleToggle("login")}
@@ -209,6 +323,7 @@ const styles = StyleSheet.create({
     padding: height * 0.027,
     paddingVertical: height * 0.03,
     paddingBottom: height * 0.05,
+    overflow: "hidden",
   },
   input: {
     width: "90%",
